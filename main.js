@@ -107,7 +107,8 @@ if (process.argv.length === 2) {
   process.exit(1);
 } else {
   let p = parse(process.argv[2]);
-  console.log(p);
   let s = solve(p);
-  console.log(s);
+  
+  console.log('RPN: ' + p);
+  console.log('RESULT: ' + s);
 }
