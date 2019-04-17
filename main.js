@@ -1,16 +1,20 @@
 require('./operators');
 require('./functions');
 
-Array.prototype.peek  = function () { return  this.slice(-1)[0]; };
-Array.prototype.empty = function () { return  this.length == 0;  };
-// Array.prototype.clean = function () { this.length = 0;           };
+Array.prototype.peek = function() {
+  return this.slice(-1)[0];
+};
+Array.prototype.empty = function() {
+  return this.length == 0;
+};
 
 const SYER = 'SYNTAX ERROR';
 const ARER = 'ARGUMENT ERROR';
+
 function parse(expression) {
-  let tokens = expression.match(/[^\d()]+|[\d.]+/g);
+  let tokens = expression.replace(/\s+/g, '').split(/(?<=[-+*/(),])|(?=[-+*/(),])/);
   let output = [];
-  let stack  = [];
+  let stack = [];
 
   for (token of tokens) {
     if (!isNaN(token)) {
@@ -27,7 +31,7 @@ function parse(expression) {
       let o2;
       while (((o2 = stack.peek()) in OPERATORS) &&
         (((OPERATORS[o1].associativity == 'lr') && (OPERATORS[o1].precedence <= OPERATORS[o2].precedence)) ||
-        ((OPERATORS[o1].associativity == 'rl') && (OPERATORS[o1].precedence < OPERATORS[o2].precedence)))) {
+          ((OPERATORS[o1].associativity == 'rl') && (OPERATORS[o1].precedence < OPERATORS[o2].precedence)))) {
         output.push(stack.pop());
       }
       stack.push(o1);
@@ -56,11 +60,23 @@ function solve(rpn) {
   let stack = [];
   for (let i = 0; i < rpn.length; ++i) {
     let token = rpn[i];
-    if(!isNaN(token)) {
+    if (!isNaN(token)) {
       stack.push(rpn.shift());
       --i;
+    } else if (token in FUNCTIONS) {
+      if (stack.length < FUNCTIONS[token].length) {
+        return ARER;
+      } else {
+        let args = [];
+        for (let j = 0; j < FUNCTIONS[token].length; j++) {
+          args.push(stack.pop());
+        }
+        let result = FUNCTIONS[rpn.shift()](...args);
+        --i;
+        stack.push(result);
+      }
     } else if (token in OPERATORS) {
-      if(stack.length < OPERATORS[token].operate.length) {
+      if (stack.length < OPERATORS[token].operate.length) {
         return ARER;
       } else {
         let args = [];
@@ -77,16 +93,21 @@ function solve(rpn) {
   }
 
   switch (stack.length) {
-    case 1: return stack.pop(); break;
-    case 2: return ARER;        break;
+    case 1:
+      return stack.pop();
+      break;
+    case 2:
+      return ARER;
+      break;
   }
 }
 
 if (process.argv.length === 2) {
   console.error('Expected at least one argument!');
   process.exit(1);
-}else {
+} else {
   let p = parse(process.argv[2]);
+  console.log(p);
   let s = solve(p);
   console.log(s);
 }
