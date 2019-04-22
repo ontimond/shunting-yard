@@ -11,10 +11,13 @@ Array.prototype.empty = function() {
 const SYER = 'SYNTAX ERROR';
 const ARER = 'ARGUMENT ERROR';
 
-function parse(expression) {
-  let tokens = expression.replace(/\s+/g, '').split(/(?<=[-+*/(),])|(?=[-+*/(),])/);
+function parse(expression) {    
+  let characters = '[\\' + Object.keys(OPERATORS).join('\\') + '(),' + ']';
+  let regex  = new RegExp('(?<=' + characters + ')|(?=' + characters + ')');
+  let tokens = expression.replace(/\s+/g, '').split(regex);
+
   let output = [];
-  let stack = [];
+  let stack  = [];
 
   for (token of tokens) {
     if (!isNaN(token)) {

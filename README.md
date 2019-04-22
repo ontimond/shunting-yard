@@ -4,9 +4,9 @@ Shunting yard algorithm and rpn solver.
 ### Example
 
 ```
-node main.js 'min((4*345),456*5)'
-> RPN: 4,345,*,456,5,*,min
-> RESULT: 1380
+< node main 'min((4 * 345), 5 ^ sqrt(2))'
+> RPN: 4,345,*,5,2,sqrt,^,min
+> RESULT: 9.738517742335421
 ```
 ---
 **NOTE**
