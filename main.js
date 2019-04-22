@@ -11,7 +11,7 @@ Array.prototype.empty = function() {
 const SYER = 'SYNTAX ERROR';
 const ARER = 'ARGUMENT ERROR';
 
-function parse(expression) {    
+function parse(expression) {
   let characters = '[\\' + Object.keys(OPERATORS).join('\\') + '(),' + ']';
   let regex  = new RegExp('(?<=' + characters + ')|(?=' + characters + ')');
   let tokens = expression.replace(/\s+/g, '').split(regex);
@@ -109,8 +109,16 @@ if (process.argv.length === 2) {
   console.error('Expected at least one argument!');
   process.exit(1);
 } else {
+
   let p = parse(process.argv[2]);
-  console.log('RPN: ' + p);
-  let s = solve(p);
-  console.log('RESULT: ' + s);
+
+  if(typeof p === 'string' || p instanceof String) {
+    console.log(p);
+    return;
+  } else {
+    console.log('RPN: ' + p);
+    let s = solve(p);
+    console.log('RESULT: ' + s);    
+  }
+
 }
