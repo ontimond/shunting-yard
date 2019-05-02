@@ -74,6 +74,7 @@ function solve(rpn) {
         for (let j = 0; j < FUNCTIONS[token].length; j++) {
           args.push(stack.pop());
         }
+        args = args.reverse();
         let result = FUNCTIONS[rpn.shift()](...args);
         --i;
         stack.push(result);
@@ -86,6 +87,7 @@ function solve(rpn) {
         for (let j = 0; j < OPERATORS[token].operate.length; j++) {
           args.push(stack.pop());
         }
+        args = args.reverse();
         let result = OPERATORS[rpn.shift()].operate(...args);
         --i;
         stack.push(result);
@@ -118,7 +120,7 @@ if (process.argv.length === 2) {
   } else {
     console.log('RPN: ' + p);
     let s = solve(p);
-    console.log('RESULT: ' + s);    
+    console.log('RESULT: ' + s);
   }
 
 }
